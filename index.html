@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./vue3.js"></script>
+</head>
+<body>
+
+
+<div id = 'counter'>
+    <!-- 如何让vue中解析的数据和dom有关联 -->
+    <!-- 使用数据：加{{}} ,
+        告诉vue{{}}中放了一个变量，在解析的配置对象中
+    找这个变量-->
+    <p>{{num}}</p>
+    <p>{{name}}</p>
+    <p>{{name2}}</p>
+<!-- 变量名字需要和配置中相同 -->
+</div>
+
+    <script>
+        //vue设计对象中的data属性返回数据
+        const Counter = {//配置对象data属性固定
+            data:function(){
+                return {
+                    num:0,
+                    name:"test"
+                }
+            },
+        };
+        //源码声明的Vue对象
+        const test = Vue.createApp(Counter);//创建一个应用，传入配置对象
+        //自动解析配置对象
+       let app = test.mount('#counter');//挂载,div中写id，挂载到这里
+        console.log(app);//其中代理了Counter中的data属性
+
+
+    </script>
+</body>
+</html>
