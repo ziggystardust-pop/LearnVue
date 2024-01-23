@@ -659,3 +659,607 @@ export default {
 
 ## 事件处理
 
+```
+ addCounter(e){
+            // this.counter++;
+            //事件对象e
+            console.log(e);//点击h2时会传入点击事件
+        },
+        
+        
+        
+        
+<script>
+export default {
+    data() {
+        return {
+            counter: 0
+        };
+    },
+    methods: {
+        // addCounter(){
+        //     this.counter++;
+        // },
+        addCounter(e) {
+            // this.counter++;
+            //事件对象e
+            console.log(e);//点击h2时会传入点击事件
+        },
+        plusnumber(num, e) {
+            this.counter += num;
+            // console.log(e);
+        }
+    },
+}
+</script>
+<template>
+    <div>
+        <!-- (1)绑定事件通过函数处理 -->
+        <h2 @click="addCounter">{{ counter }}</h2>
+
+        <!-- 绑定事件（2）通过JavaScript代码处理 -->
+        <h2 @click="counter++">{{ counter }}</h2>
+        <!-- (3) 传递参数 -->
+        <h2 @click="plusnumber(10)">{{ counter }}</h2>
+        <!-- 既有事件对象（作为实参传入）又传递参数 -->
+        <h2 @click="plusnumber(10, $event)">{{ counter }}</h2>
+        <!-- 一个点击触发多个函数 ,需要加()，事件参数也要传入-->
+        <h2 @click="plusnumber(10, $event), addCounter($event)">{{ counter }}</h2>
+
+    </div>
+</template>
+
+```
+
+![image-20240123132920737](image-20240123132920737.png)
+
+
+
+
+
+
+
+### 事件修饰符
+
+### 事件冒泡,.stop阻止事件冒泡
+
+```javascript
+ <!-- 阻止事件冒泡(执行完自身的事件还会执行父元素的事件) .stop-->
+        <div @click="divClick">
+            <button @click.stop="buttonClick">事件冒泡</button>
+        </div>
+```
+
+### 阻止默认行为.prevent
+
+```
+ <!-- 阻止默认行为(prevent)，下面例子的默认行为是submit点击，form就会提交
+        
+        表单提交： 当用户点击提交按钮时，表单将提交。
+        如果没有指定 action 属性，表单将提交到当前页面的 URL。
+        页面刷新： 默认情况下，表单提交后会导致整个页面重新加载。
+        这是因为浏览器将执行提交操作，将表单数据发送到服务器，然后接收并处理来自服务器的响应。
+        如果没有 JavaScript 干预，页面将按照提交后的响应重新加载。
+        
+        -->
+        <form action="">
+            <input type="submit" @click.prevent="submitClick">
+        </form>
+```
+
+### .once,只触发一次回调
+
+让button只能点击一次，可以用于处理上传文件和人工审核和机器复核操作在同一页面
+
+```javascript
+     <!-- .once,只触发一次回调 -->
+        
+        <button style="background-color:antiquewhite;" @click.once="onceClick">事件冒泡</button>
+
+    
+```
+
+## 表单输入绑定
+
+```javascript
+<script>
+export default {
+    data() {
+        return {
+            msg:"hello",
+            checked:true,
+            fruit:[],
+            sex:'man',
+            city:null,
+            citys:[]
+        }
+    },
+    methods: {
+        change(e){
+            this.msg = e.target.value;
+        }
+    },
+}
+</script>
+
+<template>
+    <div>
+<!-- 关联到data中的msg，输入框修改则msg关联修改 双向绑定-->
+<!-- 原理：
+1. v-bind绑定一个value属性
+2. v-on给当前元素添加一个input事件
+-->
+        <!-- <input type="text" v-model="msg"> -->
+        {{ msg }}
+<!-- v-bind是单方面的绑定，没有触发input事件 -->
+        <input type="text" v-bind:value="msg" @input="change">
+
+        <!-- v-model表单基础用法 -->
+        <!-- 复选框 
+        为单个时就是boolean值,勾选v-model自动赋值checked为true        
+    -->
+        <input type="checkbox" v-model="checked">
+
+        {{ checked }}
+        <!-- 复选，多个勾选框 -->
+        <!-- 绑定value值 ，点击后添加到数组-->
+        <input type="checkbox" v-model="fruit" value="苹果">苹果
+        <input type="checkbox" v-model="fruit" value="香蕉">香蕉
+        <input type="checkbox" v-model="fruit" value="火龙果">火龙果
+        <h1>喜欢的水果：{{ fruit }}</h1>
+
+        <!-- 单选radio 
+        javascript:加name='sex'
+        -->
+        <input type="radio" v-model="sex" value="man">man
+        <input type="radio" v-model="sex" value="woman">woman
+        <h1>{{ sex }}</h1>
+        <!-- 下拉选项，选中某个后将其value值赋值给v-model绑定的变量
+        可以在data中给默认值 -->
+        <select name="" id="" v-model="city">
+            <option value="">--Please choose an option--</option>
+            <option value="new york">new york</option>
+            <option value="tokyo">tokyo</option>
+        </select>
+        <h1>{{ city }}</h1>
+        <!-- 多选 -->
+        <select name="" id="" v-model="citys" multiple>
+            <option value="">--Please choose an option--</option>
+            <option value="new york">new york</option>
+            <option value="tokyo">tokyo</option>
+        </select>
+        <h1>{{ citys }}</h1>
+</div>
+</template>
+
+```
+
+![image-20240123152734663](image-20240123152734663.png)
+
+### 值绑定
+
+```
+  <!-- 值绑定 -->
+        <select name="" id="" v-model="citys2" multiple>
+            <option value="">--Please choose an option--</option>
+            <option :value="test">{{ test }}</option>
+        </select>
+        <h1>{{ citys2 }}</h1>
+        <button @click="changecity">改变多选中的城市</button>
+
+```
+
+将该值绑定到当前组件实例上的动态数据。这可以通过使用 `v-bind` 来实现。此外，使用 `v-bind` 还使我们可以将选项值绑定为非字符串的数据类型
+
+### 修饰符
+
+#### .lazy
+
+
+
+#### `.number`
+
+自动将用户的输入转换为数值类型
+
+**人工审核时作用比较大，用于限制用户输入和在前端就将输入规范**
+
+
+
+```
+            age:null
+
+<!-- .number -->
+        <input v-model.number="age" type="text">
+        {{ age }}
+```
+
+![image-20240123160434779](image-20240123160434779.png)
+
+#### `.trim`
+
+默认自动去除用户输入内容中两端的空格， `v-model` 后添加 `.trim` 修饰符
+
+```
+        <input v-model.trim="msg" />
+```
+
+
+
+![image-20240123160646475](image-20240123160646475.png)
+
+## 组件化开发
+
+页面各个部分分成若干组件
+
+![image-20240123161821180](image-20240123161821180.png)
+
+```vue
+<template>
+<div>
+    <h1>Content组件的内容</h1>
+    <!-- 如何展示（main.js挂载的是App.vue，使用到index.html的id = 'app'控件上） -->
+</div>
+</template>
+```
+
+```vue
+<script>
+// 引入组件(vue2方式)
+import Content from './components/Content.vue'
+export default {
+    components: {
+        Content,
+    },
+    data() {
+        return {
+
+        }
+    },
+    methods: {
+
+    },
+}
+</script>
+
+<template>
+    <!-- 在template中使用组件展示Content -->
+    <div>
+        <Content></Content>
+    </div>
+</template>
+```
+
+在template中使用组件展示Content（使用html标签）
+
+![image-20240123162932371](image-20240123162932371.png)
+
+将hello组件展示到content组件中：
+
+```vue
+<template>
+<div>
+    <h1>Content组件的内容</h1>
+    <!-- 如何展示（main.js挂载的是App.vue，使用到index.html的id = 'app'控件上） -->
+    <Hello></Hello>
+</div>
+</template>
+<!-- 将hello组件展示在content组件中 -->
+<script>
+import Hello from './Hello.vue'
+
+export default{
+// 注册组件才能使用
+    components:{
+        Hello
+    }
+}
+</script>
+```
+
+![image-20240123163819855](image-20240123163819855.png)
+
+**这样可以实现组件的复用**
+
+根组件：APP
+
+父组件：Content，其子组件：Hello
+
+## 组件数据存放
+
+Content虽然是App的子组件，但是无法拿到App中的data{ return{}; }数据
+
+### data为什么是函数
+
+data在每个组件对象中返回的是一个新的对象
+
+所以组件复用时数据不会互相干扰
+
+如果返回的是全局定义的const obj则会互相干扰
+
+<img src="image-20240123181957823.png" alt="image-20240123181957823" style="zoom:50%;" />
+
+![image-20240123190400928](image-20240123190400928.png)
+
+## prop向子组件传递数据
+
+将Content中的数据传递给Hello
+
+```
+      <!-- 静态值可以直接传入 -->
+  <Hello :message="msg" aaa="123"></Hello>
+
+```
+
+Hello中：
+
+```
+<template>
+    <div>
+        <p>hello</p>
+        <h2>{{ message }}</h2>
+    </div>
+</template>
+<script>
+    export default{
+        // 在组件的 props 列表上声明要传来的属性的名字
+        props:['message','aaa']
+    }
+</script>
+```
+
+这样在父组件中可以先获取后端返回值，然后根据组件需求分配到各个子组件 
+
+### prop类型
+
+可以为每个prop指定值类型，用对象形式列出prop
+
+```
+ <!-- aaa传入数字需要:(v-bind) -->
+    <Hello :message="msg" :aaa='123'></Hello>
+```
+
+设置类型，设置默认值
+
+```javascript
+// 在组件的 props 列表上声明要传来的属性的名字
+        // props:['message','aaa']
+        // props类型限制
+        props:{
+            message:{
+                type:String,
+                default:"okok",
+                required:true//必须传入
+            },
+            aaa:Number,
+        }
+```
+
+
+
+
+
+
+
+![image-20240123193857030](image-20240123193857030.png)
+
+```javascript
+ //接收传入的数组,默认值略有不同,对象和数字的默认值需要一个函数来返回
+            list:{
+                type:Array,
+                default(){
+                    return []
+                }
+            }
+```
+
+所有的 props 都遵循着**单向绑定**原则，props 因父组件的更新而变化，自然地将新的状态向下流往子组件，而不会逆向传递。这避免了子组件意外修改父组件的状态的情况，不然应用的数据流将很容易变得混乱而难以理解。
+
+**另外，每次父组件更新后，所有的子组件中的 props 都会被更新到最新值，这意味着你不应该在子组件中去更改一个 prop。若你这么做了，Vue 会在控制台上向你抛出警告**
+
+## 子组件向父组件传递数据
+
+### 监听子组件事件
+
+App如何拿到Content的数据：通过自定义事件
+
+在Content中：
+
+```
+    <button @click="sendToApp">提交Content组件数据到App组件</button>
+
+```
+
+```
+sendToApp(){
+            // 触发自定义事件，通过$emit来触发事件
+            // this.$emit('自定义的事件的名称','发送的事件参数')
+            this.$emit('injectMsg',this.msg);
+
+        }
+```
+
+在父组件App中：
+
+```javascript
+<script>
+import Content from './components/Content.vue'
+export default {
+    components: {
+        Content,
+    },
+    data() {
+        return {}
+    },
+    methods: {
+        getContentMsg(value){
+            //此函数的默认参数即为
+            // 子组件传来的数据
+            console.log(value);
+        }
+    },
+}
+</script>
+<template>
+    <!-- 在template中使用组件展示Content -->
+    <div>
+        <!-- 子组件中点击按钮触发了injectMsg事件，触发父组件中的getContentMsg函数 -->
+        <Content @injectMsg="getContentMsg"></Content>
+        <!-- <Content></Content> -->
+        <!-- <Content></Content> -->
+        <!-- 通过v-on监听子组件中的自定义事件 -->
+    </div>
+</template>
+```
+
+## 父子组件访问
+
+### $refs（vue2） 父组件访问子组件（重要）
+
+**为子组件或元素注册引用信息**
+
+$children在vue3已经不支持
+
+![image-20240123202552644](image-20240123202552644.png)
+
+子组件通过props获取到的数据也算是子组件的数据所以访问子组件的时候也可以访问到这些数据，还有子组件中data的数据
+
+```
+    <!-- 使用ref为组件绑定特定的id(控件上也可以使用) -->
+        <Hello :aaa='123' :list="list" ref="hello"></Hello>
+```
+
+```
+mounted(){
+            console.log(this.$refs.hello.aaa);
+        },
+```
+
+也可以执行子组件中的方法
+
+**也可以拿到控件滚动的距离和id，class等**
+
+### 子组件访问父组件 $parent
+
+不需要注册，可以直接在子组件中访问
+
+**尽量不用这个方法来获取父组件的值（组件复用性很高），父组件是谁有时比较复杂**
+
+```javascript
+ mounted(){
+            // 子组件先执行
+            console.log(this.$parent);
+            console.log(this.$root);
+        }
+    }
+```
+
+### 子组件访问跟组件 $root
+
+根组件只有一个
+
+## 插槽 slot
+
+应用中几乎每个页面的导航栏样式布局都大致相同
+
+![image-20240123205610660](image-20240123205610660.png)
+
+页面组件b中引入导航栏组件a，a中三个导航为空，需要根据情况填写
+
+```
+<template>
+    <div>
+        <h2>content组件内容</h2>
+        <div>
+            <slot></slot>
+        </div>
+    </div>
+</template>
+```
+
+```
+        <Content><button>按钮</button></Content>
+
+```
+
+多个值可以直接多个一起替换
+
+### 多插槽（具名插槽）
+
+要为具名插槽传入内容，需要使用一个含 `v-slot` 指令的 `<template>` 元素，并将目标插槽的名字传给该指令：
+
+template
+
+```vue
+  <template v-slot:header>
+    <!-- header 插槽的内容放这里 -->
+  </template>
+```
+
+虽然替换了过来但是作用域还是在原组件内
+
+**渲染作用域：**
+
+**[插槽 Slots | Vue.js (vuejs.org)](https://cn.vuejs.org/guide/components/slots.html#render-scope)**
+
+### 插槽默认值
+
+```
+<button type="submit">
+  <slot>
+    Submit <!-- 默认内容 -->
+  </slot>
+</button>
+```
+
+### 作用域插槽
+
+例如：子组件展示一个列表，但是这个列表的内容样式确由父组件决定，这种情况下父组件可能需要获取子组件此列表的内容
+
+```
+<!-- (1)子组件通过v-bind绑定list -->
+            <slot :list="list"></slot>
+```
+
+接收：
+
+```
+<Content>
+            <template v-slot="slotProps">{{ slotProps.list }}</template>
+        </Content>
+```
+
+```
+ <!-- 无序列表 -->
+        <Content>
+            <!-- 结合v-for -->
+            <template v-slot:default="slotProps">
+                <ul>
+                    <li v-for="item in slotProps.list" :key="item">
+                        {{ item }}
+                    </li>
+                </ul>
+            </template>
+        </Content>
+        <!-- 有序列表 -->
+        <Content>
+            <!-- 结合v-for -->
+            <template v-slot:default="slotProps">
+                <ol>
+                    <li v-for="item in slotProps.list" :key="item">
+                        {{ item }}
+                    </li>
+                </ol>
+            </template>
+
+        </Content>
+
+```
+
+## provide,inject，跨级通信
+
+例如：HomeView作为祖先组件，Hello作为最下级组件，Content为中间组件
+
+现在想要在Hello中拿到HomeView中的数据
+
+
+
